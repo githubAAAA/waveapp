@@ -84,7 +84,7 @@
         var loadView = function (msg) {
             api.openFrame({
                 name: 'main',
-                url: 'https://lbyfb.wuuxiang.com:9055/directory?' + 'version=' + Math.random(), //test
+                url: 'https://localhost:8080/dist?' + 'version=' + Math.random(), //test
 	            //url: 'www.baidu.com?'+ version=Math.random(); //据说此方法能驱缓存
                 //url: './html/main.html',
                 bounces: false,
@@ -119,7 +119,7 @@
 		        return `${date.getFullYear()}-${month}-${strDate} ${getCurrentTime()}`;
 	        };
 	        var now = Date.now();
-	        var appKey = Sha1("A6080992879627"+"UZ"+"41C419DA-D0EE-FE12-98CD-3AB4E85264C1"+"UZ"+now)+"."+now;
+	        var appKey = SHA1("A6080992879627"+"UZ"+"41C419DA-D0EE-FE12-98CD-3AB4E85264C1"+"UZ"+now)+"."+now;
 	        axios.defaults.baseURL = 'https://d.apicloud.com/mcm/api';
 	        axios.defaults.headers.common['X-APICloud-AppId'] = 'A6080992879627';
 	        axios.defaults.headers.common['X-APICloud-AppKey'] = appKey;
