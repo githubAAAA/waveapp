@@ -1,113 +1,242 @@
 <!doctype html>
 <html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-    <title>底部导航</title>
-    <link rel="stylesheet" type="text/css" href="./css/api.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
-    <style>
-        header{ background-color: #f2f2f2; } 
-        header ul li { height: 50px; line-height: 50px; text-align: center; display: none; color: #323237; position: relative;font-size: 18px;  }
-        header ul li.active{ display: block; }
-        #footer{  background-color: #f2f2f2; }
-        #footer ul li{  padding-top: 36px; padding-bottom: 4px; background: url() no-repeat center 2px; background-size: auto 30px; text-align: center; }
-        #footer ul li.active{ color: #6ab494; }
-        #footer ul li:nth-child(1){ background-image: url(./image/bottombtn0101.png); }
-        #footer ul li:nth-child(2){ background-image: url(./image/bottombtn0201.png); }
-        #footer ul li:nth-child(3){ background-image: url(./image/bottombtn0301.png); }
-        #footer ul li:nth-child(4){ background-image: url(./image/bottombtn0401.png); }
-        #footer ul li:nth-child(1).active{ background-image: url(./image/bottombtn0102.png); }
-        #footer ul li:nth-child(2).active{ background-image: url(./image/bottombtn0202.png); }
-        #footer ul li:nth-child(3).active{ background-image: url(./image/bottombtn0302.png); }
-        #footer ul li:nth-child(4).active{ background-image: url(./image/bottombtn0402.png); }
-        .flex-con{
-          overflow: auto
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        .wrap {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-flex-flow: column;
+        }
+
+        header {
+            width: 100%;
+            height: 2px;
+            text-align: center;
+            background-color: #6966cb;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .flex-1 {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+        }
+
+        footer {
+            //height: 30px;
+            width: 100%;
+            background-color: #81a9c3;
+            color: white;
+            line-height: 30px;
+            text-align: center;
         }
     </style>
 </head>
-<body>
-<div id="wrap" class="flex-wrap flex-vertical">
-    <header>
-        <ul>
-            <li class="border-b active" >云API</li>
-            <li class="border-b" >端API</li>
-            <li class="border-b" >开发</li>
-            <li class="border-b" >文档</li>
-        </ul>
-    </header>
-    <div id="main" class="flex-con">
 
-    </div>
-    <div id="footer" class="border-t">
-        <ul class="flex-wrap" >
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active" >云API</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con" >端API</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con" >开发</li>
-            <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con" >文档</li>
-        </ul>
-    </div>
-</div>
+<body class="wrap">
+    <header></header>
+    <section class="flex-1">
+
+    </section>
+    <!--<footer></footer>-->
 </body>
-</html>
-<script type="text/javascript" src="script/api.js"></script>
+<script type="text/javascript" src="./script/api.js"></script>
+<script type="text/javascript" src="./script/axios.js"></script>
+<script type="text/javascript" src="./script/SHA1.js"></script>
 <script type="text/javascript">
-    apiready = function () {
-        $api.fixStatusBar( $api.dom('header') );
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("log is here:");
+
+        var header = $api.dom('header'); // 获取 header 标签元素
+        var footer = $api.dom('footer'); // 获取 footer 标签元素
+
+        // 1.修复开启沉浸式效果带来的顶部Header与手机状态栏重合的问题，最新api.js方法已支持适配iPhoneX；
+        // 2.默认已开启了沉浸式效果 config.xml中 <preference name="statusBarAppearance" value="true"/>
+        // 3.沉浸式效果适配支持iOS7+，Android4.4+以上版本
+        var headerH = $api.fixStatusBar(header);
+        /*api.execScript({
+		    script: setHeaderColor("#000")
+	    });*/
+	    window.setHeaderColor = function (color) {
+		    header.style.background = color;
+	    };
         api.setStatusBarStyle({
-            style: 'dark',
-            color: '#6ab494'
+            style: 'dark'
         });
-        funIniGroup();
-    }
+        // 最新api.js为了适配iPhoneX增加的方法，修复底部Footer部分与iPhoneX的底部虚拟横条键重叠的问题；
+        // var footerH = $api.fixTabBar(footer);
 
-    function funIniGroup(){
-        var eHeaderLis = $api.domAll('header li'),
-            frames = [];
-        for (var i = 0,len = eHeaderLis.length; i < len; i++) {
-                frames.push( {
-                    name: 'frame'+i,
-                    url: './html/frame'+i+'.html',
-                    bgColor : 'rgba(0,0,0,.2)',
-                    bounces:true
-                } )
+        var systemType = api.systemType;
+        var headerType = api.statusBarAppearance; //是否支持沉浸式状态栏
+
+        var loadView = function (msg) {
+            api.openFrame({
+                name: 'main',
+                url: 'https://lbyfb.wuuxiang.com:9055/directory?' + 'version=' + Math.random(), //test
+	            //url: 'www.baidu.com?'+ version=Math.random(); //据说此方法能驱缓存
+                //url: './html/main.html',
+                bounces: false,
+                rect: { // 推荐使用Margin布局，用于适配屏幕的动态变化
+                    //marginTop: headerH, // main页面距离win顶部的高度
+                    marginTop: headerType ? headerH : 0,
+                    // marginBottom: footerH, // main页面距离win底部的高度
+                    w: 'auto' // main页面的宽度 自适应屏幕宽度
+                },
+                reload:'true',
+                // historyGestureEnabled: true, //左滑回退
+                useWKWebView: true, //iOS的WKWebView内核
+	            showProgress: true,
+                progress: {
+                    type: "page",                //加载进度效果类型，默认值为default，取值范围为default|page，default等同于showProgress参数效果；为page时，进度效果为仿浏览器类型，固定在页面的顶部
+                    title: "test",               //type为default时显示的加载框标题
+                    text: "text",                //type为default时显示的加载框内容
+                    color: "#6966cb"                //type为page时进度条的颜色，默认值为#45C01A，支持#FFF，#FFFFFF，rgb(255,255,255)，rgba(255,255,255,1.0)等格式
+                },
+	            // customRefreshHeader: "刷新...."
+            });
+
+	        var setNowFormatDate = function (){
+		        let date = new Date();
+		        var getCurrentTime = function (){
+			        //时间格式HH:MM:SS
+			        return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+		        };
+		        let month = (date.getMonth() + 1).toString().padStart(2,'0');
+		        let strDate = date.getDate().toString().padStart(2,'0');
+		        //时间格式yyyy-MM-dd HH:MM:SS
+		        return `${date.getFullYear()}-${month}-${strDate} ${getCurrentTime()}`;
+	        };
+	        var now = Date.now();
+	        var appKey = Sha1("A6080992879627"+"UZ"+"41C419DA-D0EE-FE12-98CD-3AB4E85264C1"+"UZ"+now)+"."+now;
+	        axios.defaults.baseURL = 'https://d.apicloud.com/mcm/api';
+	        axios.defaults.headers.common['X-APICloud-AppId'] = 'A6080992879627';
+	        axios.defaults.headers.common['X-APICloud-AppKey'] = appKey;
+	        axios({
+		        method: 'post',
+		        url: 'log',
+		        data: {
+			        "ret": msg + api.getPrefs({
+				        sync: true,
+				        key: 'NUM'
+			        }),
+                    'systemType': api.systemType,
+                    'systemVersion': api.systemVersion,
+                    'deviceName': api.deviceName,
+			        'deviceModel': api.deviceModel,
+			        'phoneNumber': api.getPhoneNumber({
+	                    sync: true
+                    }),
+                    'connectionType': api.connectionType,
+			        "time": setNowFormatDate()
+		        }
+	        }).then(function(response) {
+		        //alert(JSON.stringify(response.data));
+	        }).catch(function (error) {
+		        //alert('errr:'+ JSON.stringify(error));
+	        });
         }
-        api.openFrameGroup({
-            name: 'group',
-            scrollEnabled: false,
-            rect: {
-                x: 0,
-                y: $api.dom('header').offsetHeight,
-                w: api.winWidth,
-                h: $api.dom('#main').offsetHeight
-            },
-            index: 0,
-            frames: frames
-        }, function (ret, err) {
 
+	    api.getPrefs({
+		    key: 'NUM'
+	    }, function(ret, err) {
+		    if (!ret.value) {
+			    api.setPrefs({
+				    key: 'NUM',
+				    value: 1
+			    });
+			    var tt = setTimeout(function () {
+				    //alert('第一次开始加载了:' + ret.value);
+				    loadView('来自第一次');
+				    clearTimeout(tt);
+			    }, 500);
+		    } else {
+			    //alert('不是第一次开始加载了:' + ret.value);
+			    loadView('来自不是第一次');
+		    }
+	    });
+
+	    api.addEventListener({
+		    name:'resume'
+	    }, function(ret, err){
+		    //alert('应用回到前台', ret, err);
+		    loadView('来自后台唤起');
+	    });
+	    /*api.addEventListener({
+		    name:'pause'
+	    }, function(ret, err){
+		    alert('应用进入后台');
+	    });*/
+
+	    api.addEventListener({
+		    name: 'keyback'
+	    }, function(ret, err) {
+            api.historyBack({
+                frameName: 'main'
+            }, function(ret, err) {
+                if (!ret.status) {
+                    api.closeWin();
+                }
+            });
+	    });
+
+	    api.addEventListener({ // 云修复，静默修复热更新
+		    name:'smartupdatefinish'
+	    }, function(ret, err){
+		    alert('云修复完成');
+		    api.rebootApp(); //重启应用，云修复完成后可以调用此方法来重启应用使云修复生效。
+	    });
+
+
+
+        /*var resultList = api.hasPermission({ //是否具有某个权限
+            list:['internet','contacts']
         });
-    }
+        api.alert({
+            msg:JSON.stringify(resultList)
+        });*/
 
-    // 随意切换按钮
-    function randomSwitchBtn( tag ) {
-        if( tag == $api.dom('#footer li.active') )return;
-        var eFootLis = $api.domAll('#footer li'),
-            eHeaderLis = $api.domAll('header li'),
-            index = 0;
-        for (var i = 0,len = eFootLis.length; i < len; i++) {
-            if( tag == eFootLis[i] ){
-                index = i;
-            }else{
-                $api.removeCls(eFootLis[i], 'active');
-                $api.removeCls(eHeaderLis[i], 'active');
-            }
+	    /*var testURL = function () {
+            api.setFrameClient({
+                frameName: 'main'
+            }, function(ret, err) {
+                switch (ret.state) {
+                    case 0:
+                        alert("开始加载");
+                        break;
+                    case 1:
+                        alert("加载进度发生变化，当前加载进度" + ret.progress + "%");
+                        break;
+                    case 2:
+                        alert("加载结束");
+                        break;
+                    case 3:
+                        // alert(ret.title);
+                        break;
+                    case 4:
+                        alert("当前路径" + ret.url);
+                        break;
+                    default:
+                        alert("加载失败了" + JSON.stringify(ret));
+                        loadView();
+                        break;
+                }
+            });
         }
-        $api.addCls( eFootLis[index], 'active');
-        $api.addCls( eHeaderLis[index], 'active');
-        api.setFrameGroupIndex({
-            name: 'group',
-            index: index
-        });
-    }
+        testURL();*/
+    };
+
 </script>
+
+</html>
