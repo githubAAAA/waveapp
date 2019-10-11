@@ -119,9 +119,9 @@
 		        return `${date.getFullYear()}-${month}-${strDate} ${getCurrentTime()}`;
 	        };
 	        var now = Date.now();
-	        var appKey = SHA1("A6080992879627"+"UZ"+"41C419DA-D0EE-FE12-98CD-3AB4E85264C1"+"UZ"+now)+"."+now;
+	        var appKey = SHA1("A0006080992879627"+"UZ"+"41C419DA-D0EE-FE12-98CD-3AB4E85264C1"+"UZ"+now)+"."+now;
 	        axios.defaults.baseURL = 'https://d.apicloud.com/mcm/api';
-	        axios.defaults.headers.common['X-APICloud-AppId'] = 'A6080992879627';
+	        axios.defaults.headers.common['X-APICloud-AppId'] = 'A0006080992879627';
 	        axios.defaults.headers.common['X-APICloud-AppKey'] = appKey;
 	        axios({
 		        method: 'post',
